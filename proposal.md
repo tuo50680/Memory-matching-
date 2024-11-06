@@ -1,4 +1,4 @@
-# Proposal Yes i can edit it
+# Proposal 
 
 ## What will (likely) be the title of your project?
 
