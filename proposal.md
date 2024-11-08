@@ -19,6 +19,7 @@ None
 ## If planning to collaborate with 1 or 2 classmates for the final project, list their names, email addresses, and the names of their assigned TAs below.
 
 Katelyn Pobandith - tuo50680@temple.edu - TA: Elmira Talebianaraki
+
 Iman Akaff - 
 
 ## In the world of software, most everything takes longer to implement than you expect. And so it's not uncommon to accomplish less in a fixed amount of time than you hope.
@@ -26,6 +27,7 @@ Iman Akaff -
 ### In a sentence (or list of features), define a GOOD outcome for your final project. I.e., what WILL you accomplish no matter what?
 
 Counting the number of moves and the nummber of mistakes 
+
 Having the user reveal what is underneath each tile.
 
 ### In a sentence (or list of features), define a BETTER outcome for your final project. I.e., what do you THINK you can accomplish before the final project's deadline?
