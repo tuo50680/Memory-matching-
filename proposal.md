@@ -20,7 +20,7 @@ None
 
 Katelyn Pobandith - tuo50680@temple.edu - TA: Elmira Talebianaraki
 
-Iman Akaff - tut68090@temple.edu - TA Xinwen (Ellen) Zhang
+Iman Akaff - tut68090@temple.edu - TA: Xinwen (Ellen) Zhang
 
 ## In the world of software, most everything takes longer to implement than you expect. And so it's not uncommon to accomplish less in a fixed amount of time than you hope.
 
