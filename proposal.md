@@ -20,7 +20,7 @@ None
 
 Katelyn Pobandith - tuo50680@temple.edu - TA: Elmira Talebianaraki
 
-Iman Akaff - 
+Iman Akaff - tut68090@temple.edu - TA Xinwen (Ellen) Zhang
 
 ## In the world of software, most everything takes longer to implement than you expect. And so it's not uncommon to accomplish less in a fixed amount of time than you hope.
 
@@ -32,12 +32,12 @@ Having the user reveal what is underneath each tile.
 
 ### In a sentence (or list of features), define a BETTER outcome for your final project. I.e., what do you THINK you can accomplish before the final project's deadline?
 
-TODO
+- I believe we can at the very least create the game and be able to count the numbe of moves and mistakes along with a standard grid UI 
 
 ### In a sentence (or list of features), define a BEST outcome for your final project. I.e., what do you HOPE to accomplish before the final project's deadline?
 
-TODO
+- As above but instead of a standard grid UI, creating and designing a more visually appealing and impressive UI would be the goal
 
 ## In a paragraph or more, outline your next steps. What new skills will you need to acquire? What topics will you need to research? If working with one of two classmates, who will do what?
 
-TODO
+- Our next steps will start by first finalizing what engine we want to use to create our game (Unity, Unreal, or Pygame). In terms of the skillset that we need to acquire, we need to learn how to be able each portion of the game come together (the icons, the flipping of the tiles, keeping track of what the user has flipped over, determining if the user inputs are correct, etc.) We will need to research things such as sprite sheets and determine which ones we want, or if that is something even applicable to our vision. As far as who will complete what tasts, that is something we still need to determine after laying out our collective vision and creative ideas as well as comparing our current skillsets before we delegate specific tasts to eachother. 
