@@ -20,3 +20,11 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+
+#Finalize sprite sheets
+#Begin making grid
+#Making levels
+#icon locations
+#flipping the tiles
+#Having the matched icons stay uncovered
+#End game scenarios (Win, lose), Repeat Button
