@@ -1,0 +1,57 @@
+import pygame,random
+#initialize pygame ? 
+pygame.init()
+
+#Screen Dimensions
+# If it takes up your whole screen GOOD 
+# if you want to close it click alt tab and ex it out manually
+
+SCREENWIDTH = 1920
+SCREENHEIGHT = 1080
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+pygame.display.set_caption("Katelyn's IQ is < 60")
+#Grid and Box parameters
+boxSize = 50 #Later on when we make functions for each individual level, we can change the box size and spacing to make the grid smaller 
+spacing = 20 
+
+#Grid Dimensions
+'''Basically the width and height is the amount of boxes and to get the correct spacing you need to '''
+gridWidth = 3 * boxSize + 2 * spacing
+gridHeight = 3 * boxSize + 2 * spacing
+
+#Centering to screen
+'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h 
+   Not sure but im guessing the number you int divide is going to be diff for diff levels'''
+initialX = (SCREENWIDTH - gridWidth) // 2
+initialY = (SCREENHEIGHT - gridHeight) // 2
+
+#Main Loop
+run = True
+while run:
+    screen.fill("pink")
+#Draw 3x3
+    for row in range(3):
+        for column in range(3):
+            x = initialX + column * (boxSize + spacing)
+            y = initialY + row * (boxSize + spacing)
+            #TO be explained later :l
+            pygame.draw.rect(screen, (255,255,255),(x,y,boxSize, boxSize))
+    
+    #pygame.display.flip() #Update the display I guess?
+
+    #Event Handling (whatever that means)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    pygame.display.update()
+
+pygame.quit()
+
+#Finalize sprite sheets
+#Begin making grid
+#Making levels
+#icon locations
+#flipping the tiles
+#Having the matched icons stay uncovered
+#End game scenarios (Win, lose), Repeat Button
