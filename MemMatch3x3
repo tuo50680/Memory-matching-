@@ -81,13 +81,12 @@ boxSize = 50 #Later on when we make functions for each individual level, we can 
 spacing = 20 
 
 #Grid Dimensions
-'''Basically the width and height is the amount of boxes and to get the correct spacing you need to '''
+'''Basically the width and height is the amount of boxes and to get the correct spacing you need to add however many spaced times the spacing variable so for 3 spaces in a 4x4 it would be 4 * boxSize + 3 * spacing '''
 gridWidth = 3 * boxSize + 2 * spacing
 gridHeight = 3 * boxSize + 2 * spacing
 
 #Centering to screen
-'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h 
-   Not sure but im guessing the number you int divide is going to be diff for diff levels'''
+'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h '''
 initialX = (SCREENWIDTH - gridWidth) // 2
 initialY = (SCREENHEIGHT - gridHeight) // 2
 
@@ -106,12 +105,11 @@ while run:
 #Draw 3x3
     for row in range(3):
         for column in range(3):
-            x = initialX + column * (boxSize + spacing)
-            y = initialY + row * (boxSize + spacing)
-            #TO be explained later :l
+            x = initialX + column * (boxSize + spacing) #
+            y = initialY + row * (boxSize + spacing) # 
 
             if grid[row][column]: #if clicked and revealed, change to purple (just a test, we'll add whatever later)
-                pygame.draw.rect(screen, (255, 0, 255), (x,y,boxSize, boxSize))
+                pygame.draw.rect(screen, (255, 0, 255), (x,y,boxSize, boxSize)) 
             else:
                 pygame.draw.rect(screen, (255,255,255),(x,y,boxSize, boxSize))
     
@@ -138,18 +136,6 @@ while run:
     pygame.display.update()
 
 pygame.quit()
-
-#Finalize sprite sheets
-#Begin making grid
-#Making levels
-#icon locations
-#flipping the tiles
-#Having the matched icons stay uncovered
-#End game scenarios (Win, lose), Repeat Button
-
-
-
-
 
 
 
