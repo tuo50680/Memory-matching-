@@ -28,3 +28,105 @@ pygame.quit()
 #flipping the tiles
 #Having the matched icons stay uncovered
 #End game scenarios (Win, lose), Repeat Button
+
+Update 11/21
+import pygame,random
+#initialize pygame ? 
+pygame.init()
+
+#Screen Dimensions
+# If it takes up your whole screen GOOD 
+# if you want to close it click alt tab and ex it out manually
+SCREENWIDTH = 500
+SCREENHEIGHT = 500
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+pygame.display.set_caption("I hope you stub your toe extra hard today")
+#Grid and Box parameters
+boxSize = 50 #Later on when we make functions for each individual level, we can change the box size and spacing to make the grid smaller 
+spacing = 20 
+
+#Grid Dimensions
+'''Basically the width and height is the amount of boxes and to get the correct spacing you need to add however many spaced times the spacing variable so for 3 spaces in a 4x4 it would be 4 * boxSize + 3 * spacing '''
+gridWidth = 3 * boxSize + 2 * spacing
+gridHeight = 3 * boxSize + 2 * spacing
+
+#Centering to screen
+'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h '''
+initialX = (SCREENWIDTH - gridWidth) // 2
+initialY = (SCREENHEIGHT - gridHeight) // 2
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0,0,0)
+colors = random.choice([RED,GREEN])
+
+#Uploading sprite sheet test
+spriteSheetFile = pygame.image.load("sprite.png").convert_alpha()
+
+'''Tracks whether or not the square is hidden or revealed'''
+grid = []
+for row in range(3):
+    newRow = []
+    for column in range(3):
+        newRow.append(False) #False = hidden / True = revealed
+                             #can use this to remove boxes if match
+    grid.append(newRow) #append each block into the list grid to keep track of them
+
+def getImage(sheet, frame, width, height, scale, color):
+    
+    image = pygame.Surface((width, height)).convert_alpha() #transparency 
+    image.blit(sheet, (0,0), ((frame * width),5, width, height)) #take the picture on the sheet, and show it on the image
+                             #^^^chooses specific areas of the sheet to display (0,0 is the top left corner)
+    image = pygame.transform.scale(image, (width * scale, height * scale)) #scaling the image (if you want it bigger)
+    image.set_colorkey(color) #makes the bg of the image transparent
+
+    return image
+
+frame0 = getImage(spriteSheetFile, 0, boxSize, boxSize, 1.5, BLACK)
+ 
+#Main Loop
+run = True
+while run:
+    
+    screen.fill("pink")
+    
+#Draw 3x3
+    for row in range(3): #Changed to 1 for matching test case
+        for column in range(3):
+            x = initialX + column * (boxSize + spacing) #
+            y = initialY + row * (boxSize + spacing) # 
+
+            if grid[row][column]: #if clicked and revealed, change to purple (just a test, we'll add whatever later)
+                pygame.draw.rect(screen, RED, (x,y,boxSize, boxSize))  
+            else:
+                pygame.draw.rect(screen, (255,255,255),(x,y,boxSize, boxSize))
+
+    #show frame image
+    screen.blit(frame0, (x,y)) #moves the image to a location 
+    
+    #pygame.display.flip() #Update the display I guess?
+       
+    #Event Handling (whatever that means)
+    '''Event tracks what the mouse is doing'''
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+            
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouseX, mouseY = event.pos #tracks the mouse location at x,y 
+            
+            for row in range(3):
+                for column in range(3):
+                    x = initialX + column * (boxSize + spacing)
+                    y = initialY + row * (boxSize + spacing)
+                    if x <= mouseX <= x + boxSize and y <= mouseY <= y + boxSize: #checks to make sure that the mouse clicked within the boundary of the square
+                        grid[row][column] = not grid[row][column] #flips the square after clicked
+
+    pygame.display.update()
+
+pygame.quit()
+
+
+
+
