@@ -1,0 +1,3 @@
+11/22 10:00 - 2:00
+For making grid finalized on using nested for loops instead of nested lists (list inside of list)
+Currently our 3x3 grid is not being stored inside of a list 
