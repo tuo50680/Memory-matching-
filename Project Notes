@@ -4,5 +4,11 @@ Currently our 3x3 grid is not being stored inside of a list
 
 
 Populate rest of grid with sprite
-Flipping 
+Flipping
+  -Try to make box disappear on click
 Matching 
+  -Detect sprites under each box 
+  -If match, remove boxes 
+  -If not match, cover boxes again 
+End box
+  -Assign to empty box
