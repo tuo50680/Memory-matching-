@@ -230,3 +230,104 @@ while run:
 pygame.quit()
 #use sprite as a background and match the covering 
 
+
+
+
+Update 11/22: got the sprite sheet in the first box
+import pygame, random
+
+# Initialize pygame
+pygame.init()
+
+# Screen dimensions
+SCREENWIDTH = 800
+SCREENHEIGHT = 800
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+pygame.display.set_caption("Katelyn's IQ is < 60")
+
+# Grid and box parameters
+boxSize = 50  # Size of each square box
+spacing = 10  # Spacing between boxes
+
+# Grid dimensions
+gridWidth = 3 * boxSize + 2 * spacing
+gridHeight = 3 * boxSize + 2 * spacing
+
+# Centering the grid on the screen
+initialX = (SCREENWIDTH - gridWidth) // 2
+initialY = (SCREENHEIGHT - gridHeight) // 2
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0,0,0)
+
+#Uploading sprite sheet test
+spriteSheetFile = pygame.image.load("sprite.png").convert_alpha()
+
+# Create a list to store grid data
+grid = []
+
+board = []
+for row in range(3):
+    newRow = []
+    for column in range(3):
+        newRow.append(False) #False = hidden / True = revealed
+    board.append(newRow) #append each block into the list grid to keep track of them
+
+# Populate the grid with square positions
+for row in range(3):
+    row_list = []  # A list for each row
+    for column in range(3):
+        x = initialX + column * (boxSize + spacing)
+        y = initialY + row * (boxSize + spacing)
+        rect = pygame.Rect(x, y, boxSize, boxSize)  # Create a rect for the box
+        row_list.append(rect)  # Add to the current row list
+    grid.append(row_list)  # Add the row to the grid
+
+
+def getImage(sheet, frame, width, height, scale, color):
+    
+    image = pygame.Surface((width, height)).convert_alpha() #transparency 
+    image.blit(sheet, (0,0), ((frame * width),5, width, height)) #take the picture on the sheet, and show it on the image
+                             #^^^chooses specific areas of the sheet to display (0,0 is the top left corner)
+    image = pygame.transform.scale(image, (width * scale, height * scale)) #scaling the image (if you want it bigger)
+    image.set_colorkey(color) #makes the bg of the image transparent
+
+    return image
+
+frame0 = getImage(spriteSheetFile, 0, boxSize, boxSize, 1, BLACK)
+
+# Main loop
+run = True
+while run:
+    # Fill screen with background color
+    screen.fill("pink")
+
+    # Draw grid
+    for row in grid:
+        for box in row:
+            pygame.draw.rect(screen, RED, box)
+
+    #show frame image
+    screen.blit(frame0, grid[0][0].topleft) #moves the image to a location 
+
+    # Update the display
+    pygame.display.flip()
+
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+
+# Quit pygame
+pygame.quit()
+
+
+
+
+
+
+
+
+
