@@ -233,6 +233,7 @@ pygame.quit()
 
 
 
+THE CODE IS HERE PUT ON YOUR GLASSES!!!!!!!!!!!!!
 Update 11/22: got the sprite sheet in the first box
 import pygame, random
 
