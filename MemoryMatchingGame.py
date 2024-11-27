@@ -328,6 +328,113 @@ pygame.quit()
 
 
 
+UPDATE 11/26: flipping with the sprite underneath 
+import pygame,random
+#initialize pygame ? 
+pygame.init()
+
+#Screen Dimensions
+# If it takes up your whole screen GOOD 
+# if you want to close it click alt tab and ex it out manually
+SCREENWIDTH = 500
+SCREENHEIGHT = 500
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+pygame.display.set_caption("I hope you stub your toe extra hard today")
+
+#Grid and Box parameters
+boxSize = 50 #Later on when we make functions for each individual level, we can change the box size and spacing to make the grid smaller 
+spacing = 20 
+
+
+#Grid Dimensions
+'''Basically the width and height is the amount of boxes and to get the correct spacing you need to add however many spaced times the spacing variable so for 3 spaces in a 4x4 it would be 4 * boxSize + 3 * spacing '''
+gridWidth = 3 * boxSize + 2 * spacing
+gridHeight = 3 * boxSize + 2 * spacing
+
+#Centering to screen
+'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h '''
+initialX = (SCREENWIDTH - gridWidth) // 2
+initialY = (SCREENHEIGHT - gridHeight) // 2
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0,0,0)
+colors = random.choice([RED,GREEN])
+
+#Uploading sprite sheet test
+spriteSheetFile = pygame.image.load("sprite.png").convert_alpha()
+
+'''Tracks whether or not the square is hidden or revealed'''
+
+grid = [] #Make a list for the grid
+
+for row in range(3):
+    row_list = [] #Make a list for each row
+    for column in range(3):
+        x = initialX + column * (boxSize + spacing)
+        y = initialY + row * (boxSize + spacing)
+        rect = pygame.Rect(x, y, boxSize, boxSize) #Makes a rectangle for each box
+        row_list.append({"not_revealed": rect, "revealed": True, "flip": True, "progress": 0})
+        #flip progress ranges from 0-100 (50 is the half way point, so it will disappear when it gets halfway)
+        #True = revealed
+    grid.append(row_list) #Add the row list too the grid list
+
+#Getting the image and frame
+def getImage(sheet, frame, width, height, scale, color):
+    image = pygame.Surface((width, height)).convert_alpha() #transparency 
+    image.blit(sheet, (0,0), ((frame * width),5, width, height)) #take the picture on the sheet, and show it on the image
+                             #^^^chooses specific areas of the sheet to display (0,0 is the top left corner)
+    image = pygame.transform.scale(image, (width * scale, height * scale)) #scaling the image (if you want it bigger)
+    image.set_colorkey(color) #makes the bg of the image transparent
+    return image
+
+frame0 = getImage(spriteSheetFile, 0, boxSize, boxSize, 1, BLACK)
+ 
+#Main Loop
+run = True
+FPS = pygame.time.Clock() #helps to keep track of FPS
+while run:
+        
+    screen.fill("pink")
+
+    #Draw 3x3
+    for row in grid:
+        for box in row: #for each box in thr row
+            rect = box["not_revealed"] #the box chillin
+            if box["flip"]:
+                box["progress"] += 5 #when box is flipping, add 5 to the motion 
+            if box["progress"] >= 100: #until the flipping motion is complete 
+                box["flip"] = False #Flipped box will be false (not revealed)
+                box["revealed"] = not box["revealed"] #reveals the box
+                box["progress"] = 0 #reset
+
+            #This actually does the flipping motion (tbh i really have no idea how it works, im just assuming)
+            scale = (100 - box["progress"]) / 100
+            width = int(boxSize * scale)
+            x_scale = (boxSize - width) // 2 #box size will decrease until the halfway point 
+
+            if box["revealed"] and not box["progress"]: #if the box is revealed and the flipping is done
+                screen.blit(frame0, rect.topleft) #insert image 
+            else: 
+                pygame.draw.rect(screen, RED, (rect.x + x_scale, rect.y, width, boxSize)) #otherwise keep the square 
+
+    #update display
+    pygame.display.flip()
+
+    #Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for row in grid:
+                for box in row:
+                    if box["not_revealed"].collidepoint(event.pos) and not box["flip"]: #collidepoint checks if a point is inside a rectangle
+                        box["flip"] = True 
+    FPS.tick(60) #speed of flipping
+
+pygame.quit()
+
 
 
 
