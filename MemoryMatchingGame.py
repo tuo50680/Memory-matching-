@@ -439,7 +439,7 @@ pygame.quit()
 
 
 
-UPDATE 11/27: I MADE THEM INTO FUNCTIONS 
+UPDATE 11/27: I MADE THEM INTO FUNCTIONS AND PUT ONE PICTURE IN A RANDOM  BOX
 import pygame,random
 #initialize pygame ? 
 screen = pygame.init()
@@ -504,6 +504,12 @@ frame0 = getImage(spriteSheetFile, 0, 50, 50, 1, BLACK) #one frame = 50 x 50 (fo
 frame1 = getImage(spriteSheetFile2, 0, 50, 50, 1, BLACK)
 mystery = random.choice([frame0, frame1])
 
+def randomImage(grid, image):
+    row = random.randint(0, len(grid) - 1)
+    col = random.randint(0, len(grid[0]) - 1)
+    grid[row][col]["random_sprite"] = image #place the image in a random point on the board
+
+randomImage(grid, mystery)
 
 def flipAnimation(screen, grid, boxSize, frame0, frame1):
     for row in grid:
@@ -522,7 +528,10 @@ def flipAnimation(screen, grid, boxSize, frame0, frame1):
             x_scale = (boxSize - width) // 2 #box size will decrease until the halfway point 
 
             if box["revealed"] and not box["progress"]: #if the box is revealed and the flipping is done
-                screen.blit(frame0, rect.topleft) or screen.blit(frame1, rect.topleft)
+                if "random_sprite" in box: #if the random sprite is in the box
+                    screen.blit(box["random_sprite"], rect.topleft) #place the sprite
+    
+                    screen.blit(box["random_sprite"], rect.topleft)
             else: 
                 pygame.draw.rect(screen, RED, (rect.x + x_scale, rect.y, width, boxSize))
 
@@ -552,3 +561,4 @@ def main():
     pygame.quit()
 
 main()
+
