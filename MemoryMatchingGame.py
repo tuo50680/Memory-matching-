@@ -439,3 +439,116 @@ pygame.quit()
 
 
 
+UPDATE 11/27: I MADE THEM INTO FUNCTIONS 
+import pygame,random
+#initialize pygame ? 
+screen = pygame.init()
+
+#Screen Dimensions
+# If it takes up your whole screen GOOD 
+# if you want to close it click alt tab and ex it out manually
+SCREENWIDTH = 500
+SCREENHEIGHT = 500
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+pygame.display.set_caption("Azeem has the brain of a chicken")
+
+#Grid and Box parameters
+boxSize = 50 #Later on when we make functions for each individual level, we can change the box size and spacing to make the grid smaller 
+spacing = 20 
+
+#Grid Dimensions
+'''Basically the width and height is the amount of boxes and to get the correct spacing you need to add however many spaced times the spacing variable so for 3 spaces in a 4x4 it would be 4 * boxSize + 3 * spacing '''
+ROWS = 3
+COLS = 3
+gridWidth = ROWS * boxSize + (COLS - 1) * spacing
+gridHeight = COLS * boxSize + (ROWS - 1) * spacing
+
+#Centering to screen
+'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h '''
+initialX = (SCREENWIDTH - gridWidth) // 2
+initialY = (SCREENHEIGHT - gridHeight) // 2
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0,0,0)
+
+def drawGrid(rows, cols, initialX, initialY, boxSize, spacing):
+    grid = [] #Make a list for the grid
+    for row in range(3):
+        row_list = [] #Make a list for each row
+        for column in range(3):
+            x = initialX + column * (boxSize + spacing)
+            y = initialY + row * (boxSize + spacing)
+            rect = pygame.Rect(x, y, boxSize, boxSize) #Makes a rectangle for each box
+            row_list.append({"not_revealed": rect, "revealed": True, "flip": True, "progress": 0})
+            #flip progress ranges from 0-100 (50 is the half way point, so it will disappear when it gets halfway)
+            #True = revealed
+        grid.append(row_list) #Add the row list to the grid list
+    return grid
+
+grid = drawGrid(ROWS, COLS, initialX, initialY, boxSize, spacing)
+
+#Uploading sprite sheet test
+spriteSheetFile = pygame.image.load("sprite.png").convert_alpha()
+spriteSheetFile2 = pygame.image.load("cat fighting.png").convert_alpha()
+
+def getImage(sheet, frame, width, height, scale, color):
+    image = pygame.Surface((width, height)).convert_alpha() #transparency 
+    image.blit(sheet, (0,0), ((frame * width),5, width, height)) #take the picture on the sheet, and show it on the image
+                             #^^^chooses specific areas of the sheet to display (0,0 is the top left corner)
+    image = pygame.transform.scale(image, (width * scale, height * scale)) #scaling the image (if you want it bigger)
+    image.set_colorkey(color) #makes the bg of the image transparent
+    return image
+
+frame0 = getImage(spriteSheetFile, 0, 50, 50, 1, BLACK) #one frame = 50 x 50 (for both)
+frame1 = getImage(spriteSheetFile2, 0, 50, 50, 1, BLACK)
+mystery = random.choice([frame0, frame1])
+
+
+def flipAnimation(screen, grid, boxSize, frame0, frame1):
+    for row in grid:
+        for box in row: #for each box in thr row
+            rect = box["not_revealed"] #the box chillin
+            if box["flip"]:
+                box["progress"] += 5 #when box is flipping, add 5 to the motion 
+            if box["progress"] >= 100: #until the flipping motion is complete 
+                box["flip"] = False #Flipped box will be false (not revealed)
+                box["revealed"] = not box["revealed"] #reveals the box
+                box["progress"] = 0 #reset
+
+            #This actually does the flipping motion (tbh i really have no idea how it works, im just assuming)
+            scale = (100 - box["progress"]) / 100
+            width = int(boxSize * scale)
+            x_scale = (boxSize - width) // 2 #box size will decrease until the halfway point 
+
+            if box["revealed"] and not box["progress"]: #if the box is revealed and the flipping is done
+                screen.blit(frame0, rect.topleft) or screen.blit(frame1, rect.topleft)
+            else: 
+                pygame.draw.rect(screen, RED, (rect.x + x_scale, rect.y, width, boxSize))
+
+def mouseHandling(event, grid):
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        for row in grid:
+            for box in row:
+                if box["not_revealed"].collidepoint(event.pos) and not box["flip"]: #collidepoint checks if a point is inside a rectangle
+                    box["flip"] = True
+
+def main():
+    run = True
+    FPS = pygame.time.Clock() #helps to keep track of FPS
+    while run:
+        
+        screen.fill("pink")
+
+        flipAnimation(screen, grid, boxSize, frame0, frame1)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            mouseHandling(event, grid)
+    
+        pygame.display.flip()
+        FPS.tick(60)
+    pygame.quit()
+
+main()
