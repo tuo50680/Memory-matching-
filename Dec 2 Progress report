@@ -2,15 +2,17 @@
 
 #### Your name
 
-TODO
+-Katelyn Pobandith
+-Iman Akaff
 
 #### Your section leader's name
 
-TODO
+-Iman TA: Xinwen (Ellen) Zhang ellenz@temple.edu
+-Katelyn TA: Elmira Talebianaraki elmira.talebianaraki@temple.edu
 
 #### Project title
 
-TODO
+-Memory Matching Game
 
 ***
 
@@ -18,12 +20,12 @@ Short answers for the below questions suffice. If you want to alter your plan fo
 
 #### What have you done for your project so far?
 
-TODO
+-Made a 3x3 Grid that has a hidden image under a random tile. Clicking a tile will make it flip and the tile will dissapear
 
 #### What have you not done for your project yet?
 
-TODO
+-Make images occupy all of the boxes, code the matching function, making increasing levels, make a "endbox" which if clicked will make the year 
 
 #### What problems, if any, have you encountered?
+having more then one image appear underneath the box, making a matching function, making boxes that dont match restart the game
 
-TODO
