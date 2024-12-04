@@ -20,7 +20,8 @@ Match them (learning how to check he dictionary if flipped and allat
 
 12/3
 -Grid Indexing Error in mouseHandling
-You are not correctly incrementing the row_index and col_index while iterating through the grid. Both remain 0, which causes all interactions to reference only the first row and column.
+You are not correctly incrementing the row_index and col_index while iterating through the grid. 
+Both remain 0, which causes all interactions to reference only the first row and column.
 -Not Removing Matched Tiles
 You set matched to True for a box when a pair matches, but the tiles do not visually disappear. This is because you're still drawing them in flipAnimation.
 -
