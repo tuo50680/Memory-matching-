@@ -622,7 +622,7 @@ def getImage(sheet, frame, width, height, scale, color):
     image.set_colorkey(color) #makes the bg of the image transparent
     return image
 
-frame0 = (getImage(spriteSheetFile, 0, 50, 50, 1, BLACK))*2 #one frame = 50 x 50 (for both)
+frame0 = getImage(spriteSheetFile, 0, 50, 50, 1, BLACK) #one frame = 50 x 50 (for both)
 frame1 = getImage(spriteSheetFile2, 0, 50, 50, 1, BLACK)
 mystery = random.choice([frame0, frame1])
 
