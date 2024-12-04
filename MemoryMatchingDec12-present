@@ -178,7 +178,7 @@ def main():
 main()
 
 
-
+12/4
 import pygame,random
 #initialize pygame ? 
 screen = pygame.init()
@@ -206,6 +206,10 @@ gridHeight = COLS * boxSize + (ROWS - 1) * spacing
 '''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h '''
 initialX = (SCREENWIDTH - gridWidth) // 2
 initialY = (SCREENHEIGHT - gridHeight) // 2
+
+#Timer
+TIMER = pygame.USEREVENT + 1
+resetDelay = 1000 #1 second delay
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -332,10 +336,21 @@ def matchingPairs(grid):
             if box1["random_sprite"] == box2["random_sprite"] :
                 box1["matched"] = True
                 box2["matched"] = True
-                #box1["revealed"] = True
-                #box2["revealed"] = True
+            else: #if sprites do not match
+                #box1["flip"] = True
+                #box2["flip"] = True
+                pygame.time.set_timer(TIMER, resetDelay) 
 
         clickedBoxes.clear()
+
+def timerReset(grid):
+    for row in grid:
+        for box in row:
+            if not box["matched"] and box["revealed"]:
+                box["flip"] = False
+                box["revealed"] = False
+    pygame.time.set_timer(TIMER, 0)
+
 
 def main():
     run = True
@@ -349,6 +364,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            elif event.type == TIMER:
+                timerReset(grid)          
+
             mouseHandling(event, grid)
     
         pygame.display.flip()
