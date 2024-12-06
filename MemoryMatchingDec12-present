@@ -580,6 +580,8 @@ def main():
     pygame.quit()
 
 main()
+
+
 import pygame,random
 #initialize pygame ? 
 screen = pygame.init()
