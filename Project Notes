@@ -25,4 +25,7 @@ Both remain 0, which causes all interactions to reference only the first row and
 -Not Removing Matched Tiles
 You set matched to True for a box when a pair matches, but the tiles do not visually disappear. This is because you're still drawing them in flipAnimation.
 -
-
+12/6
+-End box 
+-levels
+-new sprites
