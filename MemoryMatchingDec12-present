@@ -664,6 +664,7 @@ def randomImage(grid, image):
     row, col = freePositions.pop()
     grid[row][col]["random_sprite"] = image #place the image in a random point on the board
 
+#display gave over on screen
 def gameOver(screen, SCREENWIDTH, SCREENHEIGHT):
     font = pygame.font.Font(None, 74)
     text = font.render("GAME OVER", True, (255,0,0))
@@ -673,6 +674,9 @@ def gameOver(screen, SCREENWIDTH, SCREENHEIGHT):
     pygame.display.flip()
     pygame.time.delay(2000)
 
+#end box function
+#(i relaized that we dont really need this function bc our code to have the end box work is just directly in the matchingPairs function)
+'''
 def endBox(screen, grid, event):
     global run
     if not hasattr(event,"type"):
@@ -685,8 +689,9 @@ def endBox(screen, grid, event):
                     run = False
                     return True
     return False
+'''
 
- #function for populating grid with sprites and checking their position
+#function for populating grid with sprites and checking their position
 def popGrid(grid,frame0,frame1,end):
     freePositions = []
     for row in range(len(grid)):
@@ -741,6 +746,13 @@ def mouseHandling(event, grid):
         for row_index, row in enumerate(grid):
             for col_index, box in enumerate(row):
                 if box["not_revealed"].collidepoint(event.pos) and not box["flip"]:  # Check click
+
+                    if "random_sprite" in box and box["random_sprite"] == end: #this makes sure the end box will end the 
+                        gameOver(screen, SCREENWIDTH, SCREENHEIGHT)
+                        pygame.quit()
+                        run = False
+                        return
+
                     if box["flip"] or box["revealed"]:
                         return
                     box["flip"] = True #start the flip animation
@@ -752,7 +764,8 @@ def mouseHandling(event, grid):
 
 #Action for matching the boxes
 clickedBoxes = []
-def matchingPairs(grid):  
+def matchingPairs(grid):
+    global run
 
     if len(clickedBoxes) == 2: #make sure 2 boxes are clicked 
         box1_row, box1_col = clickedBoxes[0]
@@ -760,6 +773,16 @@ def matchingPairs(grid):
 
         box1 = grid[box1_row][box1_col]
         box2 = grid[box2_row][box2_col]
+
+        if "random_sprite" in box1 and box1["random_sprite"] == end: #if end sprite in box1, game over
+            gameOver(screen, SCREENWIDTH, SCREENHEIGHT)
+            run = False
+            return
+        
+        elif "random_sprite" in box2 and box2["random_sprite"] == end: #if end sprite in box 2, game over
+            gameOver(screen, SCREENWIDTH, SCREENHEIGHT)
+            run = False
+            return
 
         if "random_sprite" in box1 and "random_sprite" in box2:
             if box1["random_sprite"] == box2["random_sprite"] :
@@ -796,8 +819,8 @@ def main():
                 run = False
             elif event.type == TIMER:
                 timerReset(grid)          
-            if endBox(event,grid,screen):
-                break
+            #if endBox(event,grid,screen):
+                #break
             mouseHandling(event, grid)
     
         pygame.display.flip()
@@ -805,4 +828,3 @@ def main():
     pygame.quit()
 
 main()
-
