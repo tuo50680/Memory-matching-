@@ -902,17 +902,7 @@ frame1 = getImage(spriteSheetFile2, 0, 50, 50, 1, BLACK)
 end = getImage(spriteSheetFile3, 0, 64, 64, 1, BLACK)
 mystery = random.choice([frame0, frame1, end])
 
-def randomImage(grid, image):
-    row = random.randint(0, len(grid) - 1)
-    col = random.randint(0, len(grid[0]) - 1)
 
-    freePositions = []
-    for row in range(len(grid)):
-        for col in range(len(grid[0])):
-            freePositions.append((row,col))
-    random.shuffle(freePositions)
-    row, col = freePositions.pop()
-    grid[row][col]["random_sprite"] = image #place the image in a random point on the board
 
 #display gave over on screen
 def gameOver(screen, SCREENWIDTH, SCREENHEIGHT):
@@ -926,11 +916,15 @@ def gameOver(screen, SCREENWIDTH, SCREENHEIGHT):
 
 def gameWin(screen, SCREENWIDTH, SCREENHEIGHT):
     font = pygame.font.Font(None, 74)
-    text = font.render("YOU WON (yay)", True, (255,0,0))
+    text = font.render("YOU WON (yay)", True, (255,0,255))
     textCenter = text.get_rect(center=(SCREENWIDTH//2, SCREENHEIGHT//2))
-    screen.fill((0,0,0))
+    screen.fill((0,255,0))
     screen.blit(text, textCenter)
-    confetti.emit()
+    for event in pygame.event.get():
+        if event.type== pygame.MOUSEMOTION:
+            confetti0.add_confetti()
+            
+    confetti0.emit()
     pygame.display.flip()
     pygame.time.delay(2000)
 
@@ -1008,9 +1002,9 @@ def mouseHandling(event, grid):
 
 #Action for matching the boxes
 clickedBoxes = []
+matchedList = []
 def matchingPairs(grid):
     global run
-
     if len(clickedBoxes) == 2: #make sure 2 boxes are clicked 
         box1_row, box1_col = clickedBoxes[0]
         box2_row, box2_col = clickedBoxes[1]
@@ -1024,9 +1018,13 @@ def matchingPairs(grid):
             if box1["random_sprite"] == box2["random_sprite"] :
                 box1["matched"] = True
                 box2["matched"] = True
+                matchedList.append((box1,box2))
             else: #if sprites do not match
                 pygame.time.set_timer(TIMER, resetDelay)
-        
+        if len(matchedList) == 4:
+            gameWin(screen, SCREENWIDTH, SCREENHEIGHT)
+            
+            
                  
         clickedBoxes.clear()
 
@@ -1107,4 +1105,3 @@ def main():
     pygame.quit()
 
 main()
-
