@@ -828,3 +828,283 @@ def main():
     pygame.quit()
 
 main()
+
+
+
+
+import pygame,random
+#initialize pygame ? 
+screen = pygame.init()
+
+#Screen Dimensions
+# If it takes up your whole screen GOOD 
+# if you want to close it click alt tab and ex it out manually
+SCREENWIDTH = 1000
+SCREENHEIGHT = 1000
+screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+pygame.display.set_caption("Azeem has the brain of a chicken, katelyn is a rabbit")
+
+#Grid and Box parameters
+boxSize = 50 #Later on when we make functions for each individual level, we can change the box size and spacing to make the grid smaller 
+spacing = 20 
+
+#Grid Dimensions
+'''Basically the width and height is the amount of boxes and to get the correct spacing you need to add however many spaced times the spacing variable so for 3 spaces in a 4x4 it would be 4 * boxSize + 3 * spacing '''
+ROWS = 3
+COLS = 3
+gridWidth = ROWS * boxSize + (COLS - 1) * spacing
+gridHeight = COLS * boxSize + (ROWS - 1) * spacing
+
+#Centering to screen
+'''Initial x and y is at top left so to get to the center you take the the SCREEN w & h - the GRID w & h '''
+initialX = (SCREENWIDTH - gridWidth) // 2
+initialY = (SCREENHEIGHT - gridHeight) // 2
+
+#Timer
+TIMER = pygame.USEREVENT + 1
+resetDelay = 1000 #1 second delay
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0,0,0)
+
+def drawGrid(rows, cols, initialX, initialY, boxSize, spacing):
+    grid = [] #Make a list for the grid
+    for row in range(3):
+        row_list = [] #Make a list for each row
+        for column in range(3):
+            x = initialX + column * (boxSize + spacing)
+            y = initialY + row * (boxSize + spacing)
+            rect = pygame.Rect(x, y, boxSize, boxSize) #Makes a rectangle for each box
+            row_list.append({"not_revealed": rect, "revealed": True, "flip": True, "progress": 0, "matched" : False, "endBox": True})
+            #flip progress ranges from 0-100 (50 is the half way point, so it will disappear when it gets halfway)
+            #True = revealed
+        grid.append(row_list) #Add the row list to the grid list
+    return grid
+
+grid = drawGrid(ROWS, COLS, initialX, initialY, boxSize, spacing)
+
+#Uploading sprite sheet test
+spriteSheetFile = pygame.image.load("sprite.png").convert_alpha()
+spriteSheetFile2 = pygame.image.load("cat fighting.png").convert_alpha()
+spriteSheetFile3 = pygame.image.load("plant.png").convert_alpha()
+
+def getImage(sheet, frame, width, height, scale, color):
+    image = pygame.Surface((width, height)).convert_alpha() #transparency 
+    image.blit(sheet, (0,0), ((frame * width),5, width, height)) #take the picture on the sheet, and show it on the image
+                             #^^^chooses specific areas of the sheet to display (0,0 is the top left corner)
+    image = pygame.transform.scale(image, (width * scale, height * scale)) #scaling the image (if you want it bigger)
+    image.set_colorkey(color) #makes the bg of the image transparent
+    return image
+
+frame0 = getImage(spriteSheetFile, 0, 50, 50, 1, BLACK) #one frame = 50 x 50 (for both)
+frame1 = getImage(spriteSheetFile2, 0, 50, 50, 1, BLACK)
+end = getImage(spriteSheetFile3, 0, 64, 64, 1, BLACK)
+mystery = random.choice([frame0, frame1, end])
+
+def randomImage(grid, image):
+    row = random.randint(0, len(grid) - 1)
+    col = random.randint(0, len(grid[0]) - 1)
+
+    freePositions = []
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            freePositions.append((row,col))
+    random.shuffle(freePositions)
+    row, col = freePositions.pop()
+    grid[row][col]["random_sprite"] = image #place the image in a random point on the board
+
+#display gave over on screen
+def gameOver(screen, SCREENWIDTH, SCREENHEIGHT):
+    font = pygame.font.Font(None, 74)
+    text = font.render("GAME OVER", True, (255,0,0))
+    textCenter = text.get_rect(center=(SCREENWIDTH//2, SCREENHEIGHT//2))
+    screen.fill((0,0,0))
+    screen.blit(text, textCenter)
+    pygame.display.flip()
+    pygame.time.delay(2000)
+
+def gameWin(screen, SCREENWIDTH, SCREENHEIGHT):
+    font = pygame.font.Font(None, 74)
+    text = font.render("YOU WON (yay)", True, (255,0,0))
+    textCenter = text.get_rect(center=(SCREENWIDTH//2, SCREENHEIGHT//2))
+    screen.fill((0,0,0))
+    screen.blit(text, textCenter)
+    confetti.emit()
+    pygame.display.flip()
+    pygame.time.delay(2000)
+
+
+#function for populating grid with sprites and checking their position
+def popGrid(grid,frame0,frame1,end):
+    freePositions = []
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            freePositions.append((row,col))
+    random.shuffle(freePositions)
+    
+    
+    images = [frame0] * 4 + [frame1]* 4 + [end]*1
+    random.shuffle(images)
+
+    for image, position in zip(images,freePositions):
+        row,col = position
+        grid[row][col]["random_sprite"] = image
+popGrid(grid,frame0,frame1, end)
+                                              
+                                            
+def flipAnimation(screen, grid, boxSize, frame0, frame1, end):
+    for row in grid:
+        for box in row: #for each box in the row
+            rect = box["not_revealed"] #the box chillin
+            if box["matched"]:
+                if "random_sprite" in box:
+                    screen.blit(box["random_sprite"],rect.topleft)
+                continue #Will skip matched tiles
+
+            if box["revealed"]:
+                if "random_sprite" in box:
+                    screen.blit(box["random_sprite"], rect.topleft)
+                
+
+            if box["flip"]:
+                box["progress"] += 5 #when box is flipping, add 5 to the motion 
+            if box["progress"] >= 100: #until the flipping motion is complete 
+                box["flip"] = False #Flipped box will be false (not revealed)
+                box["revealed"] = not box["revealed"] #reveals the box
+                box["progress"] = 0 #reset
+
+            #This actually does the flipping motion (tbh i really have no idea how it works, im just assuming)
+            scale = (100 - box["progress"]) / 100
+            width = int(boxSize * scale)
+            x_scale = (boxSize - width) // 2 #box size will decrease until the halfway point 
+
+            if box["revealed"] and not box["progress"]: #if the box is revealed and the flipping is done
+                if "random_sprite" in box: #if the random sprite is in the box
+                    screen.blit(box["random_sprite"], rect.topleft) #place the sprite
+            else: 
+                pygame.draw.rect(screen, (255,255,255), (rect.x + x_scale, rect.y, width, boxSize))
+
+def mouseHandling(event, grid):
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        for row_index, row in enumerate(grid):
+            for col_index, box in enumerate(row):
+                if box["not_revealed"].collidepoint(event.pos) and not box["flip"]:  # Check click
+
+                    if "random_sprite" in box and box["random_sprite"] == end: #this makes sure the end box will end the 
+                        gameOver(screen, SCREENWIDTH, SCREENHEIGHT)
+                        #pygame.quit()
+                        run = False
+                        return
+
+                    if box["flip"] or box["revealed"]:
+                        return
+                    box["flip"] = True #start the flip animation
+                    clickedBoxes.append((row_index, col_index))
+
+                    #Check for a pair if two boxes r clicked 
+                    if len(clickedBoxes) == 2:
+                        matchingPairs(grid)
+
+#Action for matching the boxes
+clickedBoxes = []
+def matchingPairs(grid):
+    global run
+
+    if len(clickedBoxes) == 2: #make sure 2 boxes are clicked 
+        box1_row, box1_col = clickedBoxes[0]
+        box2_row, box2_col = clickedBoxes[1]
+        box1 = grid[box1_row][box1_col]
+        box2 = grid[box2_row][box2_col]
+
+
+
+
+        if "random_sprite" in box1 and "random_sprite" in box2:
+            if box1["random_sprite"] == box2["random_sprite"] :
+                box1["matched"] = True
+                box2["matched"] = True
+            else: #if sprites do not match
+                pygame.time.set_timer(TIMER, resetDelay)
+        
+                 
+        clickedBoxes.clear()
+
+    
+
+#Utilize the timer when there is a mismatch
+def timerReset(grid):
+    for row in grid:
+        for box in row:
+            if not box["matched"] and box["revealed"]:
+                box["flip"] = False
+                box["revealed"] = False
+    pygame.time.set_timer(TIMER, 0)
+
+
+class CONFETTI:
+    def __init__(self):
+        self.confetti=[]
+        self.surface = pygame.image.load("confetti.png").convert_alpha()
+        self.width = self.surface.get_rect().width
+        self.height = self.surface.get_rect().height
+
+    def emit(self):
+        if self.confetti:
+            self.delete_confetti()
+            for confetti in self.confetti:
+                confetti[0].x += confetti[1]
+                confetti[0].y += confetti[2]
+                confetti[3] -=0.2
+                screen.blit(self.surface,confetti[0])
+
+    def add_confetti(self):
+        x = pygame.mouse.get_pos()[0] - self.width / 2
+        y = pygame.mouse.get_pos()[1] - self.height / 2
+        direction_x = random.randint(-3,3)
+        direction_y = random.randint(-3,3)
+        lifetime = random.randint(4,10)
+        confetti_rect = pygame.Rect(x,y,self.width,self.height)
+        self.confetti.append([confetti_rect,direction_x,direction_y,lifetime])
+
+    def delete_confetti(self):
+        confetti_copy = [confetti for confetti in self.confetti if confetti[3 ] > 0]
+        self.confetti = confetti_copy
+        
+CONFETTI_EVENT = pygame.USEREVENT+1
+pygame.time.set_timer(CONFETTI_EVENT,40)
+
+confetti0 = CONFETTI()
+
+def main():
+    global run
+    run = True
+    FPS = pygame.time.Clock() #helps to keep track of FPS
+    while run:
+        
+        screen.fill("pink")
+
+        flipAnimation(screen, grid, boxSize, frame0, frame1, end)
+
+        for event in pygame.event.get():
+            
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == TIMER:
+                timerReset(grid)
+            elif event.type == CONFETTI_EVENT:
+                confetti0.add_confetti()
+            #elif event.type == pygame.MOUSEMOTION:
+                #confetti0.add_confetti()
+        
+            mouseHandling(event, grid)
+
+        confetti0.emit()
+        pygame.display.update()
+        pygame.display.flip()
+        FPS.tick(60)
+        
+    pygame.quit()
+
+main()
+
